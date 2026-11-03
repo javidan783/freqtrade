@@ -2,6 +2,8 @@ name: Run Existing Backtest
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ "develop" ]
 
 jobs:
   run-backtest:
@@ -28,6 +30,11 @@ jobs:
 
       - name: Install Freqtrade
         run: pip install freqtrade
+
+      - name: Create Default Config (ساخت کانفیگ پیش‌فرض)
+        run: |
+          mkdir -p user_data
+          freqtrade new-config --config user_data/config.json
 
       - name: Download Data
         run: freqtrade download-data --exchange binance -t 5m --pairs BTC/USDT --timerange 20240101-20240201 --config user_data/config.json
