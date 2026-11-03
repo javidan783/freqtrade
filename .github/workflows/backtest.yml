@@ -31,9 +31,10 @@ jobs:
       - name: Install Freqtrade
         run: pip install freqtrade
 
-      - name: Create Default Config (ساخت کانفیگ پیش‌فرض)
+      - name: Create Config
         run: |
           mkdir -p user_data
+          # ساخت فایل کانفیگ پیش‌فرض با پسوند json که کاملاً سازگار است
           freqtrade new-config --config user_data/config.json
 
       - name: Download Data
