@@ -1,0 +1,36 @@
+name: Run Existing Backtest
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install TA-Lib
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential wget
+          wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+          tar -xzf ta-lib-0.4.0-src.tar.gz
+          cd ta-lib/
+          ./configure --prefix=/usr
+          make
+          sudo make install
+
+      - name: Install Freqtrade
+        run: pip install freqtrade
+
+      - name: Download Data
+        run: freqtrade download-data --exchange binance -t 5m --pairs BTC/USDT --timerange 20240101-20240201 --config user_data/config.json
+
+      - name: Run Backtest
+        run: freqtrade backtesting --strategy SampleStrategy --timeframe 5m --config user_data/config.json
